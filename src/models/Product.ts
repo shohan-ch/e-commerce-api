@@ -14,7 +14,9 @@ const productSchema = new Schema(
     },
     sku: {
       type: String,
+      trim: true,
       required: true,
+      unique: true,
     },
     category: {
       main: String,
@@ -48,7 +50,9 @@ const productSchema = new Schema(
       default: false,
     },
     adminId: {
-      type: Schema.Types.ObjectId,
+      type: String,
+      trim: true,
+      // type: Schema.Types.ObjectId,
     },
     status: {
       type: String,
@@ -56,15 +60,13 @@ const productSchema = new Schema(
       default: "pending",
     },
 
-    images: [
-      {
-        coverImage: {
-          type: String,
-          required: true,
-        },
-        images: [String],
+    images: {
+      coverImage: {
+        type: String,
+        required: true,
       },
-    ],
+      images: [String],
+    },
   },
   { timestamps: true, versionKey: false }
 );
