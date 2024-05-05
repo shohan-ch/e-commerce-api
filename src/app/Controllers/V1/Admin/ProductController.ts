@@ -10,6 +10,11 @@ class ProductController {
     return JsonReponse.success(data);
   }
 
+  async update(req: Request, res: Response) {
+    const data = await ProductRepository.update(req, res);
+    return JsonReponse.success(data);
+  }
+
   async index(req: Request, res: Response) {
     return res.json();
   }
