@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import { auth } from "./FrontEnd/V1/auth";
 import { posts } from "./FrontEnd/V1/posts";
 import { file } from "./FrontEnd/V1/file";
+import { adminProducts } from "./Admin/products";
 
 const router = Router();
 
@@ -16,6 +17,13 @@ const routes = [
   },
   {
     path: file,
+  },
+
+  // Admin Route
+
+  {
+    name: "/admin/products",
+    path: adminProducts,
   },
 ];
 
