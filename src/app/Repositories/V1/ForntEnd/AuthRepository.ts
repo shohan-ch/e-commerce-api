@@ -6,7 +6,7 @@ import JwtAuth from "../../../../lib/JwtAuth";
 import Nodemailer from "../../../../lib/Nodemailer";
 import JwtToken from "../../../../models/JwtToken";
 import ResetPassword from "../../../../models/ResetPassword";
-import User from "../../../../models/User";
+import Customer from "../../../../models/Customer";
 import EmailVerifyTemplate from "../../../../templates/EmailVerifyTemplate";
 import ForgetPasswordTemplate from "../../../../templates/ForgetPasswordTemplate";
 import JsonReponse from "../../../../lib/JsonReponse";
@@ -34,7 +34,7 @@ class AuthRepository {
     if (!isTokenExist) {
       throw Error("Token is not found");
     } else {
-      const resetPassword = await User.findOneAndUpdate(
+      const resetPassword = await Customer.findOneAndUpdate(
         { email: isTokenExist.email },
         { password: BcryptHash.makeHash(password) }
       );
@@ -66,7 +66,7 @@ class AuthRepository {
       email: "required|email",
     });
     const { email } = reqData;
-    const user = await User.findOne({ email });
+    const user = await Customer.findOne({ email });
     if (!user) {
       throw Error("Email not found!");
     }
@@ -145,7 +145,7 @@ class AuthRepository {
       password: "required|max:10|min:5",
     });
 
-    let user = await User.findOne({
+    let user = await Customer.findOne({
       email: reqData.email,
     });
 
@@ -196,12 +196,12 @@ class AuthRepository {
       verify_code: "required|number|max:6",
       email: "required|email",
     });
-    const user: any = await User.findOne({
+    const user: any = await Customer.findOne({
       email: reqData.email,
     });
 
     if (!user) {
-      throw Error("User not found!");
+      throw Error("Customer not found!");
     } else if (user.isVerified) {
       throw Error("Email already verified!");
     } else if (reqData.verify_code != user.verifyCode) {
@@ -223,21 +223,21 @@ class AuthRepository {
         confirm_password: "required|max:10|min:5|matchPassword",
       });
 
-      const existUser = await User.where("email")
+      const existCustomer = await Customer.where("email")
         .equals(reqData.email)
         .findOne();
-      // const existUser = await User.findOne({ email: reqData.email });
-      if (existUser) {
+      // const existCustomer = await Customer.findOne({ email: reqData.email });
+      if (existCustomer) {
         throw Error("Email is already exist!");
       }
       const hashPassword = BcryptHash.makeHash(reqData.password);
-      const newUser = {
+      const newCustomer = {
         name: reqData.name,
         email: reqData.email,
         password: hashPassword,
       };
-      const insertUser = await User.create(newUser);
-      if (insertUser)
+      const insertCustomer = await Customer.create(newCustomer);
+      if (insertCustomer)
         return "Verify email sent to your mail address. please verify.";
     } catch (error) {
       JsonReponse.error(error.message);
@@ -252,22 +252,24 @@ class AuthRepository {
       confirm_password: "required|min:5|matchPassword",
     });
 
-    const existUser = await User.where("email").equals(reqData.email).findOne();
-    // const existUser = await User.findOne({ email: reqData.email });
-    if (existUser) {
+    const existCustomer = await Customer.where("email")
+      .equals(reqData.email)
+      .findOne();
+    // const existCustomer = await Customer.findOne({ email: reqData.email });
+    if (existCustomer) {
       throw Error("Email is already exist!");
     }
     const hashPassword = BcryptHash.makeHash(reqData.password);
     const verifyCode = Math.floor(100000 + Math.random() * 900000); // Declare dynamic path and catch fileMiddleware
 
-    const newUser = {
+    const newCustomer = {
       name: reqData.name,
       email: reqData.email,
       password: hashPassword,
       verifyCode,
     };
-    const insertUser = await User.create(newUser);
-    if (insertUser)
+    const insertCustomer = await Customer.create(newCustomer);
+    if (insertCustomer)
       return "Verify email sent to your mail address. please verify.";
   }
 

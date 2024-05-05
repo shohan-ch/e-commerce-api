@@ -3,7 +3,7 @@ import { unlinkSync } from "fs";
 import Validation from "../../../../helpers/Validation";
 import fileUploadMiddleware from "../../../../middlewares/fileUploadMiddleware";
 import Post from "../../../../models/Post";
-import User from "../../../../models/User";
+import User from "../../../../models/Customer";
 
 class PostRepository {
   constructor() {}

@@ -2,17 +2,43 @@ import mongoose, { Schema, Document } from "mongoose";
 import Nodemailer from "../lib/Nodemailer";
 import EmailVerifyTemplate from "../templates/EmailVerifyTemplate";
 
-const userSchema = new Schema(
+const addressSchema = new Schema({
+  label: {
+    type: String,
+    enum: ["Work", "Home", "Partner"],
+  },
+  city: {
+    type: String,
+  },
+  area: {
+    type: String,
+  },
+  house: {
+    type: String,
+  },
+  road: {
+    type: String,
+  },
+  block: {
+    type: String,
+  },
+});
+
+const customerSchema = new Schema(
   {
     name: String,
-    email: { type: String, unique: true, required: true },
-    posts: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Post",
-      },
-    ],
+    email: { type: String, trim: true, unique: true, required: true },
     password: { type: String, required: true },
+    gender: { type: String, required: [true, "Gender is needed!"] },
+    dob: { type: Date, required: true },
+    mobile: {
+      type: Number,
+      maxlength: 11,
+      minlength: 11,
+      trim: true,
+      required: [true, "Valid mobile number needed!"],
+    },
+    address: [addressSchema],
     verifyCode: { type: Number, maxLength: 6 },
     isVerified: { type: Boolean, default: false },
   },
@@ -36,12 +62,12 @@ const userSchema = new Schema(
 
 // Pre hook are used for before  insert new record in database.
 
-// userSchema.pre("save", function () {
+// customerSchema.pre("save", function () {
 //   console.log(this.name);
 // });
 
 // Middlware to send mail after insert new record in database;
-userSchema.post("save", async function (user, next) {
+customerSchema.post("save", async function (user, next) {
   const emailVerifyTemplate = EmailVerifyTemplate(user.name, user.verifyCode);
   const sendMail: any = await Nodemailer.sendMail(
     user.email,
@@ -57,4 +83,4 @@ userSchema.post("save", async function (user, next) {
   }
 });
 
-export default mongoose.model("User", userSchema);
+export default mongoose.model("Customer", customerSchema);
