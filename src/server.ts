@@ -1,3 +1,5 @@
+import { swaggerDoc } from "./../swagger";
+import swaggerUi from "swagger-ui-express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Application } from "express";
@@ -31,6 +33,7 @@ class Server {
   }
 
   middlewares() {
+    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
     this.app.use(cors({ credentials: true, origin: true })); // credential true means accept header data form client req ex: cookie
     this.app.use(express.static(__dirname + "/public"));
     this.app.use(express.json());
