@@ -3,7 +3,7 @@ import { existsSync, unlinkSync } from "fs";
 import Validation from "../../../../helpers/Validation";
 import ProductFileUploadMiddleware from "../../../../middlewares/ProductFileUploadMiddleware";
 import Product from "../../../../models/Product";
-class ProductRepository {
+class AdminProductRepository {
   constructor() {}
 
   async update(req: any, res: Response) {
@@ -176,4 +176,4 @@ class ProductRepository {
   }
 }
 
-export default new ProductRepository();
+export default new AdminProductRepository();

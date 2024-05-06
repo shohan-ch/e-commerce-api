@@ -1,8 +1,9 @@
-import express, { Router } from "express";
+import { Router } from "express";
+import { adminProducts } from "./Admin/adminProducts";
 import { auth } from "./FrontEnd/V1/auth";
-import { posts } from "./FrontEnd/V1/posts";
 import { file } from "./FrontEnd/V1/file";
-import { adminProducts } from "./Admin/products";
+import { posts } from "./FrontEnd/V1/posts";
+import { products } from "./FrontEnd/V1/products";
 
 const router = Router();
 
@@ -17,6 +18,10 @@ const routes = [
   },
   {
     path: file,
+  },
+  {
+    name: "/products",
+    path: products,
   },
 
   // Admin Route

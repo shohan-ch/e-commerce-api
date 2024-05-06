@@ -1,10 +1,10 @@
-// import ProductRepository from "app/Repositories/V1/Admin/ProductRepository";
+// import AdminProductRepository from "app/Repositories/V1/Admin/AdminProductRepository";
 
 import { Request, Response } from "express";
-import ProductRepository from "../../../Repositories/V1/Admin/ProductRepository";
+import AdminProductRepository from "../../../Repositories/V1/Admin/AdminProductRepository";
 import JsonReponse from "../../../../lib/JsonReponse";
 
-class ProductController {
+class AdminProductController {
   /**
    * @openapi
    * '/admin/products':
@@ -48,7 +48,7 @@ class ProductController {
    */
 
   async store(req: Request, res: Response) {
-    const data = await ProductRepository.store(req, res);
+    const data = await AdminProductRepository.store(req, res);
     return JsonReponse.success(data);
   }
 
@@ -93,7 +93,7 @@ class ProductController {
    */
 
   async update(req: Request, res: Response) {
-    const data = await ProductRepository.update(req, res);
+    const data = await AdminProductRepository.update(req, res);
     return JsonReponse.success(data);
   }
 
@@ -110,4 +110,4 @@ class ProductController {
   }
 }
 
-export default new ProductController();
+export default new AdminProductController();
