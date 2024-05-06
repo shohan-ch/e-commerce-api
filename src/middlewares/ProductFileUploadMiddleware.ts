@@ -1,19 +1,36 @@
 import { Request } from "express";
 import { existsSync, mkdirSync } from "fs";
 import multer from "multer";
+import Product from "../models/Product";
 
 const diskStorage = multer.diskStorage({
-  destination: function (req: Request | any, file, cb) {
+  destination: async function (req: Request | any, file, cb) {
     const { sku } = req.body;
-    if (!sku) {
-      cb(new Error("Product sku is required."), "");
-    } else {
-      let fileUploadPath = `src/public/uploads/products/${sku}/${file.fieldname}`;
-      if (!existsSync(fileUploadPath)) {
-        mkdirSync(fileUploadPath, { recursive: true });
+    let path = `src/public/uploads/products/`;
+    if (req.method === "POST") {
+      if (!sku) {
+        cb(new Error("Product sku is required."), "");
       }
-      cb(null, fileUploadPath);
+      path += `${sku}/${file.fieldname}`;
+    } else {
+      // console.log(req.updateSkuPath);
+      path += `${req.updateSkuPath}/${file.fieldname}`; // path comes from update
     }
+
+    if (!existsSync(path)) {
+      mkdirSync(path, { recursive: true });
+    }
+    cb(null, path);
+
+    // if (!sku && req.method === "POST") {
+    //   cb(new Error("Product sku is required."), "");
+    // } else {
+    //   let fileUploadPath = `src/public/uploads/products/${sku}/${file.fieldname}`;
+    //   if (!existsSync(fileUploadPath)) {
+    //     mkdirSync(fileUploadPath, { recursive: true });
+    //   }
+    //   cb(null, fileUploadPath);
+    // }
   },
   filename: (req, file, cb) => {
     let ext = file.originalname.split(".")[1].toLocaleLowerCase();

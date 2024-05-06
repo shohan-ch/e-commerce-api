@@ -8,9 +8,11 @@ class ProductRepository {
 
   async update(req: any, res: Response) {
     const { productId } = req.params;
+
     const product = await Product.findById(productId);
-    console.log(product);
     if (!product) throw Error("Product not found");
+
+    req.updateSkuPath = product.sku; // sku sent to uploadMiddleware if upload needed than upload same sku file
 
     return new Promise((resolve, reject) => {
       const uploadFile = ProductFileUploadMiddleware.fields([
@@ -19,7 +21,7 @@ class ProductRepository {
       ]);
 
       uploadFile(req, res, async (err) => {
-        let coverImg = req.files["coverImage"] && req.files["coverImage"];
+        let coverImg = req.files["coverImage"];
         let images = req.files["images"];
 
         if (err) {
@@ -38,47 +40,30 @@ class ProductRepository {
             };
 
             let deletePath = `src/public/uploads/products/${product.sku}/`;
-            let imagesObj = {};
+            let imagesObj: any = {};
 
-            console.log(coverImg, "cover");
-            console.log(images, "imaaa");
+            if (images) {
+              product.images.images.map((img: any) =>
+                unlinkSync(deletePath + "images/" + img)
+              );
 
-            if (!coverImg && images) {
-              imagesObj = {
-                images: images.map((img: any) => img.filename),
-              };
-              images &&
-                product.images.images.map((img: any) =>
-                  unlinkSync(deletePath + "images/" + img)
-                );
+              imagesObj.images = images.map((img: any) => img.filename);
             }
 
-            if (!images && coverImg) {
-              imagesObj = {
-                coverImage: coverImg[0].filename,
-              };
+            if (coverImg) {
               coverImg &&
                 unlinkSync(
                   deletePath + "coverImage/" + product.images.coverImage
                 );
+              imagesObj.coverImage = coverImg[0].filename;
             }
 
-            // else {
-            // Delete both Image
-            // coverImg &&
-            //   unlinkSync(
-            //     deletePath + "coverImage/" + product.images.coverImage
-            //   );
-            // images &&
-            //   product.images.images.map((img: any) =>
-            //     unlinkSync(deletePath + "images/" + img)
-            //   );
-            // }
+            // console.log(imagesObj, "length");
 
             await Validation.validate(data, {
               name: "required|string",
               description: "required",
-              sku: "required",
+              // sku: "required",
               category: "required",
               price: "required",
               quantity: "required",
@@ -87,30 +72,25 @@ class ProductRepository {
 
             // update database
 
+            let updateData: any;
+
+            if (Object.keys(imagesObj).length) {
+              updateData = { ...data, images: imagesObj };
+            } else {
+              updateData = { ...data };
+            }
+
             const updateProduct = await Product.findOneAndUpdate(
               {
                 _id: productId,
               },
-              {
-                ...data,
-                images: Object.keys(imagesObj).length ? imagesObj : undefined,
-              }
+              updateData
             );
 
             if (updateProduct) {
               resolve("Product update successfully.");
             }
           } catch (error) {
-            // images &&
-            //   images.map((img: any) => {
-            //     if (existsSync(img.path)) {
-            //       unlinkSync(img.path);
-            //     }
-            //   });
-
-            // if (coverImg && existsSync(coverImg[0].path)) {
-            //   unlinkSync(coverImg[0].path);
-            // }
             reject(error);
           }
         }
