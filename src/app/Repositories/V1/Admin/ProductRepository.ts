@@ -125,7 +125,7 @@ class ProductRepository {
       ]);
 
       uploadFile(req, res, async (err) => {
-        let coverImg = req.files["coverImage"] && req.files["coverImage"];
+        let coverImg = req.files["coverImage"];
         let images = req.files["images"];
 
         if (err) {
@@ -149,8 +149,10 @@ class ProductRepository {
                   : undefined,
               },
               images: {
-                coverImage: coverImg[0].filename,
-                images: images.map((img: any) => img.filename),
+                coverImage: coverImg && coverImg[0].filename,
+                images: images
+                  ? images.map((img: any) => img.filename)
+                  : undefined,
               },
             };
 
@@ -167,7 +169,7 @@ class ProductRepository {
               coverImage: "required",
             });
 
-            // Store images
+            // Store in database
 
             let insertProduct = await Product.create(data);
 
@@ -175,12 +177,13 @@ class ProductRepository {
               resolve("Product added successfully.");
             }
           } catch (error) {
-            images &&
+            if (images) {
               images.map((img: any) => {
                 if (existsSync(img.path)) {
                   unlinkSync(img.path);
                 }
               });
+            }
 
             if (coverImg && existsSync(coverImg[0].path)) {
               unlinkSync(coverImg[0].path);

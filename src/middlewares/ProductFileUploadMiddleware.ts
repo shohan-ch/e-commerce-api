@@ -5,13 +5,15 @@ import multer from "multer";
 const diskStorage = multer.diskStorage({
   destination: function (req: Request | any, file, cb) {
     const { sku } = req.body;
-    if (!sku) throw Error("Product sku is required.");
-
-    let fileUploadPath = `src/public/uploads/products/${sku}/${file.fieldname}`;
-    if (!existsSync(fileUploadPath)) {
-      mkdirSync(fileUploadPath, { recursive: true });
+    if (!sku) {
+      cb(new Error("Product sku is required."), "");
+    } else {
+      let fileUploadPath = `src/public/uploads/products/${sku}/${file.fieldname}`;
+      if (!existsSync(fileUploadPath)) {
+        mkdirSync(fileUploadPath, { recursive: true });
+      }
+      cb(null, fileUploadPath);
     }
-    cb(null, fileUploadPath);
   },
   filename: (req, file, cb) => {
     let ext = file.originalname.split(".")[1].toLocaleLowerCase();
