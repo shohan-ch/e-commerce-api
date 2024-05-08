@@ -68,7 +68,41 @@ const productSchema = new Schema(
       images: [String],
     },
   },
-  { timestamps: true, versionKey: false }
+  {
+    statics: {
+      productsWithImage(products) {
+        let imagePath = `${process.env.BASE_URL}/uploads/products/`;
+
+        const productWithImageUrl = products.map((product: any) => {
+          const { coverImage, images } = product.images;
+          product.images.coverImage =
+            imagePath + product.sku + "/coverImage/" + coverImage;
+          product.images.images = images.map(
+            (img: any) => imagePath + product.sku + "/images/" + img
+          );
+          return product;
+        });
+
+        return productWithImageUrl;
+      },
+    },
+
+    methods: {
+      productWithImage() {
+        let product: any = this;
+        let imagePath = `${process.env.BASE_URL}/uploads/products/`;
+        const { coverImage, images } = product.images;
+        product.images.coverImage =
+          imagePath + product.sku + "/coverImage/" + coverImage;
+        product.images.images = images.map(
+          (img: any) => imagePath + product.sku + "/images/" + img
+        );
+        return product;
+      },
+    },
+    timestamps: true,
+    versionKey: false,
+  }
 );
 
 export default model("Product", productSchema);
