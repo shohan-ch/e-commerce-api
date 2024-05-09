@@ -27,15 +27,16 @@ const addressSchema = new Schema({
 const customerSchema = new Schema(
   {
     name: String,
-    email: { type: String, trim: true, unique: true, required: true },
+    email: { type: String, trim: true, unique: true },
     password: { type: String, required: true },
-    gender: { type: String, required: [true, "Gender is needed!"] },
+    gender: { type: String },
     dob: { type: Date, required: true },
     mobile: {
       type: Number,
       maxlength: 11,
       minlength: 11,
       trim: true,
+      unique: true,
       required: [true, "Valid mobile number needed!"],
     },
     address: [addressSchema],
