@@ -5,7 +5,51 @@ import Product from "../../../../models/Product";
 class CartRepository {
   constructor() {}
 
-  async getAll(req: any, res: Response) {
+  async deleteOne(req: any, res: Response) {
+    const customerId = "663cbb6d7de80af4948d5e23";
+
+    const deleteCartProduct = await Cart.findOneAndUpdate(
+      {},
+      {
+        $pull: { products: { productId: req.params.productId } },
+      },
+      {
+        new: true,
+      }
+    );
+
+    let updateAmount: number = 0;
+    deleteCartProduct.products.map((product: any) => {
+      updateAmount += product.quantityPrice;
+    });
+
+    deleteCartProduct.totalAmount = updateAmount;
+    await deleteCartProduct.save();
+    return "Deleted product from cart";
+
+    // let del = await Cart.deleteOne({
+    //   products: {
+    //     $in: [{ productId: req.params.productId }],
+    //   },
+    // });
+    // console.log(del);
+
+    // let cart: any = await Cart.findOne().where("customerId").equals(customerId);
+
+    // cart.products = cart.products.filter(
+    //   (product: any) => product.productId != req.params.productId
+    // );
+
+    // let updateAmount: number = 0;
+    // cart.products.map((product: any) => {
+    //   updateAmount += product.quantityPrice;
+    // });
+
+    // console.log(updateAmount);
+    // cart.totalAmount = Number(updateAmount);
+    // await cart.save();
+  }
+  async getOne(req: any, res: Response) {
     const customerId = "663cbb6d7de80af4948d5e23";
     let cart = await Cart.findOne()
       .where("customerId")
@@ -15,8 +59,6 @@ class CartRepository {
     let cartsWithImage = Cart.cartWithProductImage(cart);
     return cartsWithImage;
   }
-  async getOne(req: any, res: Response) {}
-  async getByCategory(req: any, res: Response) {}
 
   async store(req: any, res: Response) {
     const customerId = "663cbb6d7de80af4948d5e23";
