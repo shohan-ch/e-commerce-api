@@ -5,6 +5,7 @@ import { file } from "./FrontEnd/V1/file";
 import { posts } from "./FrontEnd/V1/posts";
 import { products } from "./FrontEnd/V1/products";
 import { carts } from "./FrontEnd/V1/carts";
+import { orders } from "./FrontEnd/V1/orders";
 
 const router = Router();
 
@@ -27,6 +28,10 @@ const routes = [
   {
     name: "/carts",
     path: carts,
+  },
+  {
+    name: "/orders",
+    path: orders,
   },
 
   // Admin Route
