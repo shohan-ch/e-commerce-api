@@ -19,6 +19,7 @@ const CartSchema = new Schema(
         quantityPrice: Number,
         quantity: { type: Number },
         sku: String,
+        _id: false,
       },
     ],
     totalAmount: {
@@ -31,7 +32,40 @@ const CartSchema = new Schema(
     },
   },
   {
-    statics: {},
+    statics: {
+      cartWithProductImage(cart) {
+        let imagePath = `${process.env.BASE_URL}/uploads/products/`;
+        const { products } = cart;
+
+        cart.products = products.map((product: any) => {
+          const { images, coverImage } = product.productId.images;
+          product.productId.images.coverImage =
+            imagePath + product.sku + "/coverImage/" + coverImage;
+
+          product.productId.images.images = images.map((image: any) => {
+            return imagePath + product.sku + "/images/" + image;
+          });
+          return product;
+        });
+        return cart;
+
+        // let cartsWithImage = carts.map((cart: any) => {
+        //   const { products } = cart;
+        //   cart.products = products.map((product: any) => {
+        //     const { images, coverImage } = product.productId.images;
+        //     product.productId.images.coverImage =
+        //       imagePath + product.sku + "/coverImage/" + coverImage;
+
+        //     product.productId.images.images = images.map((image: any) => {
+        //       return imagePath + product.sku + "/images/" + image;
+        //     });
+        //     return product;
+        //   });
+        //   return cart;
+        // });
+        // return cartsWithImage;
+      },
+    },
     methods: {},
     timestamps: true,
     versionKey: false,

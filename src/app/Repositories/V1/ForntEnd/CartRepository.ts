@@ -1,17 +1,20 @@
 import { Response } from "express";
-import { unlinkSync } from "fs";
-import Validation from "../../../../helpers/Validation";
-import fileUploadMiddleware from "../../../../middlewares/fileUploadMiddleware";
-import Post from "../../../../models/Post";
-import User from "../../../../models/Customer";
 import Cart from "../../../../models/Cart";
 import Product from "../../../../models/Product";
-import mongoose, { Schema } from "mongoose";
 
 class CartRepository {
   constructor() {}
 
-  async getAll(req: any, res: Response) {}
+  async getAll(req: any, res: Response) {
+    const customerId = "663cbb6d7de80af4948d5e23";
+    let cart = await Cart.findOne()
+      .where("customerId")
+      .equals(customerId)
+      .populate("products.productId", "images");
+
+    let cartsWithImage = Cart.cartWithProductImage(cart);
+    return cartsWithImage;
+  }
   async getOne(req: any, res: Response) {}
   async getByCategory(req: any, res: Response) {}
 
