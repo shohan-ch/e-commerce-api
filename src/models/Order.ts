@@ -31,6 +31,7 @@ const OrderSchema = new Schema(
     discount: {
       type: Number,
       required: true,
+      default: 0,
     },
     tax: {
       type: Number,

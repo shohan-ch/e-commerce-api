@@ -1,89 +1,36 @@
 import { Response } from "express";
 import Order from "../../../../models/Order";
 import Product from "../../../../models/Product";
+import mongoose from "mongoose";
 
 class OrderRepository {
   constructor() {}
 
   async store(req: any, res: Response) {
     const customerId = "663cbb6d7de80af4948d5e23";
-    // const customerId = new mongoose.Types.ObjectId();
     const { productId } = req.params;
-    const { quantity, type } = req.query;
+    const { quantity } = req.query;
 
     const product = await Product.findById(productId);
     const isExistOrder = await Order.findOne({ customerId });
-
     if (!product) throw Error("Product not found!");
 
-    let selectProduct: any;
-    if (isExistOrder) {
-      const { products } = isExistOrder;
-      let totalAmount: number = 0;
+    let newOrder = {
+      customerId: customerId,
+      referenceNumber: new mongoose.Types.ObjectId(),
+      products: [
+        {
+          productId: productId,
+          name: product.name,
+          price: product.price,
+          quantity: quantity,
+          quantityPrice: Number(product.price) * Number(quantity),
+          sku: product.sku,
+        },
+      ],
+    };
 
-      let updateProducts =
-        products.length &&
-        products.map((product) => {
-          if (product.productId == productId && type === "increment") {
-            product.quantity += Number(quantity);
-          }
-          if (product.productId == productId && type === "decrement") {
-            product.quantity != 1 && (product.quantity -= Number(quantity));
-          }
-
-          product.quantityPrice = product.quantity * product.price;
-          totalAmount += product.quantityPrice;
-          return product;
-        });
-
-      selectProduct = products.some((product) => product.productId == productId)
-        ? updateProducts
-        : [
-            ...products,
-            {
-              productId: productId,
-              name: product.name,
-              price: product.price,
-              quantity: quantity || 1,
-              sku: product.sku,
-              quantityPrice: Number(product.price) * (quantity || 1),
-            },
-          ];
-
-      // Update cart
-
-      isExistOrder.products = selectProduct;
-
-      // Count total amount
-
-      // isExistOrder.totalAmount = products.length ? totalAmount : product.price;
-
-      isExistOrder.totalAmount = products.some(
-        (product) => product.productId == productId
-      )
-        ? totalAmount
-        : totalAmount + Number(product.price) * (quantity || 1);
-
-      await isExistOrder.save();
-    } else {
-      let newOrderItem = {
-        customerId: customerId,
-        products: [
-          {
-            productId: productId,
-            name: product.name,
-            price: product.price,
-            quantity: quantity || 1,
-            sku: product.sku,
-            quantityPrice: product.price * (quantity || 1),
-          },
-        ],
-        totalAmount: product.price * (quantity || 1),
-      };
-      await Order.create(newOrderItem);
-    }
-
-    return "updated cart";
+    return "updated order";
   }
 
   async deleteOne(req: any, res: Response) {
