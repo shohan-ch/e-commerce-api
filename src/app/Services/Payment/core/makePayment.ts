@@ -4,17 +4,11 @@ import nagadPayment from "../nagad/nagadPayment";
 import dbTransaction from "./dbTransaction";
 
 class MakePayment {
-  public paymentType: string;
-  public data: any;
+  constructor() {}
 
-  constructor(type: string, data: any) {
-    this.paymentType = type;
-    this.data = data;
-  }
-
-  async callToGateway() {
+  async callToGateway(paymentType: string, data: any) {
     let payment: any;
-    switch (this.paymentType) {
+    switch (paymentType) {
       case "bkash":
         payment = new bkashPayment();
         break;
@@ -24,11 +18,10 @@ class MakePayment {
       default:
         break;
     }
-    let amount = await dbTransaction.getAmount(this.data);
-    // return paymentData;
+    let amount = await dbTransaction.getAmount(data);
     let response = payment.init(amount);
 
-    if (this.paymentType === "bkash" && response.bkashURL) {
+    if (paymentType === "bkash") {
       return response.bkashURL;
     } else {
       return false;
@@ -36,4 +29,4 @@ class MakePayment {
   }
 }
 
-export default MakePayment;
+export default new MakePayment();
