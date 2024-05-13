@@ -10,16 +10,24 @@ class BkashCredentail {
   }
 
   async getCredentials() {
-    let credential = await PaymentGateWay.findOne()
+    let credential: any = await PaymentGateWay.findOne()
       .where("type")
       .equals("bkash");
+    let result = { ...credential._doc };
 
     if (credential.isLiveActive) {
       this.isLive = true;
-      this.credential = credential.liveCredentials;
+      delete result.sandboxCredentials;
+      result.appKey = result.liveCredentials.appKey;
+      result.secret = result.liveCredentials.secret;
     } else {
-      this.credential = credential.sandboxCredentials;
+      delete result.liveCredentials;
+      result.appKey = result.sandboxCredentials.appKey;
+      result.secret = result.sandboxCredentials.secret;
     }
+    delete result.liveCredentials;
+    delete result.sandboxCredentials;
+    this.credential = result;
   }
 
   getBaseUrl() {

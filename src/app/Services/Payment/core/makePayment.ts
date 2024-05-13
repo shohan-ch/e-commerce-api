@@ -28,7 +28,11 @@ class MakePayment {
     // return paymentData;
     let response = payment.init(amount);
 
-    return response;
+    if (this.paymentType === "bkash" && response.bkashURL) {
+      return response.bkashURL;
+    } else {
+      return false;
+    }
   }
 }
 

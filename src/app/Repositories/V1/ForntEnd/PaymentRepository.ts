@@ -11,6 +11,13 @@ class PaymentRepository {
     return paymentRes;
     // const paymentResponse = makePayment.callToGateway();
   }
+  async bkashCallback(req: any, res: Response) {
+    const { gateway, orderId } = req.body;
+    let payment = new makePayment(gateway, orderId);
+    let paymentRes = payment.callToGateway();
+    return paymentRes;
+    // const paymentResponse = makePayment.callToGateway();
+  }
 }
 
 export default new PaymentRepository();
