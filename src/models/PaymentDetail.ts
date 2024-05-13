@@ -1,6 +1,6 @@
 import mongoose, { Schema, model } from "mongoose";
 
-const PaymentLogSchema = new Schema(
+const PaymentDetailsSchema = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
@@ -15,10 +15,6 @@ const PaymentLogSchema = new Schema(
     gateway: {
       type: String,
       required: true,
-      trim: true,
-    },
-    ipAddress: {
-      type: String,
       trim: true,
     },
     amount: {
@@ -39,4 +35,4 @@ const PaymentLogSchema = new Schema(
   { timestamps: true, versionKey: false }
 );
 
-export default model("PaymentLog", PaymentLogSchema);
+export default model("PaymentDetail", PaymentDetailsSchema);

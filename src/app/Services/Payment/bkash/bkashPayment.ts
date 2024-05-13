@@ -55,7 +55,8 @@ class BkashPayment extends bkashCredentail {
   bkashCallback(paymentID: string, status: string) {
     if (status === "success") {
       let response = this.executePayment(paymentID);
-      dbTransaction.storePaymentDetails(response);
+      const dbInsertion = dbTransaction.storePaymentDetails(response);
+      if (dbInsertion) return "Payment execution are successful";
     } else if (status === "failure") {
       throw Error(
         "Bkash transaction are failure for some reason, please try again later"

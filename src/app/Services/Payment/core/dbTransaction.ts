@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Order from "../../../../models/Order";
 import PaymentLog from "../../../../models/PaymentLog";
+import PaymentDetail from "../../../../models/PaymentDetail";
 
 class DbTransaction {
   constructor() {}
@@ -31,6 +32,19 @@ class DbTransaction {
       };
       const newLog = await PaymentLog.create(newPaymentLog);
       if (!newLog) throw Error("payment log not created.");
+      // Payment details store in database
+      const details = {
+        userId,
+        orderId: paymentLog.oderId,
+        gatewate: paymentLog.gateway,
+        amount: response.amount,
+        status: "success",
+        paymentId: response.paymentID,
+        trxId: response.trxID,
+        response: response,
+      };
+      await PaymentDetail.create(details);
+      return true;
     } catch (error) {
       console.log(error);
       throw Error(error.message);
