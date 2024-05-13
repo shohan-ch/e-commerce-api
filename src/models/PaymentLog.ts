@@ -2,34 +2,33 @@ import mongoose, { Schema, model } from "mongoose";
 
 const PaymentLog = new Schema(
   {
-    type: {
+    userId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      trim: true,
+    },
+    oderId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      trim: true,
+    },
+    gateway: {
       type: String,
       required: true,
       trim: true,
     },
-    userName: {
+    ipAddress: {
       type: String,
-      required: true,
-    },
-    password: {
-      type: String,
-      required: true,
       trim: true,
     },
-    sandboxCredentials: {
-      appKey: String,
-      secret: String,
-      _id: false,
+    amount: {
+      type: Number,
     },
-    liveCredentials: {
-      appKey: String,
-      secret: String,
-      _id: false,
+    status: {
+      type: String,
+      enum: ["pending", "success", "cancel"],
     },
-    isLiveActive: {
-      type: Boolean,
-      default: false,
-    },
+    response: Object,
   },
   { timestamps: true, versionKey: false }
 );
