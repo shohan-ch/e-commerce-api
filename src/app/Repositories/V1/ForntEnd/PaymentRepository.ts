@@ -9,7 +9,10 @@ class PaymentRepository {
     let paymentResponse = makePayment.callToGateway(gateway, orderId);
     return paymentResponse;
   }
-  async bkashCallback(req: any, res: Response) {}
+  async bkashCallback(req: any, res: Response) {
+    const { paymentID, status } = req.query;
+    const bkashExecuteCallbak = makePayment.bkashCallBack(paymentID, status);
+  }
 }
 
 export default new PaymentRepository();

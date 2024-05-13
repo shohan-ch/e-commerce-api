@@ -9,6 +9,10 @@ class DbTransaction {
     if (!order) throw Error("Amount data not found");
     return order.totalAmount;
   }
+
+  async paymentLog() {
+    // let log = await
+  }
 }
 
 export default new DbTransaction();

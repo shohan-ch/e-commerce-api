@@ -4,13 +4,18 @@ class CallApi {
   constructor() {}
 
   async postRequest(url: string, headers: any, postData: any) {
-    let response = await fetch(url, {
-      method: "POST",
-      headers: headers,
-      body: postData,
-    });
-    let data = await response.json();
-    return data;
+    try {
+      let response = await fetch(url, {
+        method: "POST",
+        headers: headers,
+        body: postData,
+      });
+      let data = await response.json();
+      return data;
+    } catch (error) {
+      console.log(error, "Gateway api call error");
+      // throw Error(error.message);
+    }
   }
 
   setHeaders(option: HeaderProps = null) {

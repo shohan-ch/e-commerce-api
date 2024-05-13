@@ -47,10 +47,32 @@ class BkashPayment extends bkashCredentail {
     };
 
     let response = await this.callApi.postRequest(url, headers, postData);
+
     return response;
   }
 
-  executePayment() {}
+  bkashCallback(paymentID: string, status: string) {
+    if (status === "success") {
+      this.executePayment(paymentID);
+    }
+  }
+  async executePayment(paymentID: string) {
+    const { id_token, refresh_token } = await this.grantToken();
+    let url = this.baseUrl + "/tokenized/checkout/execute";
+    const { appKey } = this.credential;
+
+    let headers = this.callApi.setHeaders({
+      authorization: id_token,
+      appKey,
+    });
+
+    let postData = {
+      paymentID: paymentID,
+    };
+
+    let response = await this.callApi.postRequest(url, headers, postData);
+    return response;
+  }
 }
 
 export default BkashPayment;

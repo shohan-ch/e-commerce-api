@@ -27,6 +27,11 @@ class MakePayment {
       return false;
     }
   }
+
+  bkashCallBack(paymentID: string, status: string) {
+    let payment = new bkashPayment();
+    let response = payment.bkashCallback(paymentID, status);
+  }
 }
 
 export default new MakePayment();
