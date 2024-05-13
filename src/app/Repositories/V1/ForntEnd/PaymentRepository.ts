@@ -5,8 +5,8 @@ class PaymentRepository {
   constructor() {}
 
   async store(req: any, res: Response) {
-    const { gateway, orderId } = req.body;
-    let paymentResponse = makePayment.callToGateway(gateway, orderId);
+    // const { gateway, orderId } = req.body;
+    let paymentResponse = makePayment.callToGateway(req);
     return paymentResponse;
   }
   async bkashCallback(req: any, res: Response) {

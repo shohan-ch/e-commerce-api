@@ -1,3 +1,4 @@
+import dbTransaction from "../core/dbTransaction";
 import CallApi from "../lib/callApi";
 import bkashCredentail from "./bkashCredentail";
 
@@ -53,7 +54,14 @@ class BkashPayment extends bkashCredentail {
 
   bkashCallback(paymentID: string, status: string) {
     if (status === "success") {
-      this.executePayment(paymentID);
+      let response = this.executePayment(paymentID);
+      dbTransaction.storePaymentDetails(response);
+    } else if (status === "failure") {
+      throw Error(
+        "Bkash transaction are failure for some reason, please try again later"
+      );
+    } else {
+      throw Error("Bkash payment are cancel");
     }
   }
   async executePayment(paymentID: string) {

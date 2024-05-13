@@ -24,6 +24,12 @@ const PaymentLog = new Schema(
     amount: {
       type: Number,
     },
+    trxId: {
+      type: String,
+    },
+    paymentId: {
+      type: String,
+    },
     status: {
       type: String,
       enum: ["pending", "success", "cancel"],
