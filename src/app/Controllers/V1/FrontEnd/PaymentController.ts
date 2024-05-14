@@ -7,6 +7,7 @@ class PaymentController {
 
   async store(req: Request | any, res: Response) {
     const data = await PaymentRepository.store(req, res);
+    console.log(data);
     return JsonReponse.success(data);
   }
   async bkashCallback(req: any, res: Response) {

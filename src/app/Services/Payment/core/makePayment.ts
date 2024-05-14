@@ -8,7 +8,7 @@ import stripePayment from "../stripe/stripePayment";
 class MakePayment {
   constructor() {}
 
-  async callToGateway(req: Request) {
+  async callToGateway(req: Request, res: Response) {
     const { gateway, orderId } = req.body;
 
     const customerId = "663cbb6d7de80af4948d5e23";
@@ -28,7 +28,7 @@ class MakePayment {
         break;
     }
     let amount = await dbTransaction.getAmount(orderId);
-    let response = payment.init(amount);
+    let response = await payment.init(amount);
 
     if (response && gateway === "bkash") {
       const newRequestLog = {
@@ -43,10 +43,10 @@ class MakePayment {
       };
 
       await PaymentLog.create(newRequestLog);
-
       return response.bkashURL;
-    } else {
-      return false;
+    } else if (response && gateway === "stripe") {
+      return response.url;
+      // res.redirect(response.url);
     }
   }
 

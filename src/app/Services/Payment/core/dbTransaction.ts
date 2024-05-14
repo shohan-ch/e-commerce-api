@@ -9,6 +9,7 @@ class DbTransaction {
   async getAmount(data: any) {
     let order = await Order.findOne({ _id: data, status: "pending" });
     if (!order) throw Error("Amount data not found");
+
     return order.totalAmount;
   }
 
