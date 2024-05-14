@@ -3,6 +3,7 @@ import bkashPayment from "../bkash/bkashPayment";
 import nagadPayment from "../nagad/nagadPayment";
 import dbTransaction from "./dbTransaction";
 import PaymentLog from "../../../../models/PaymentLog";
+import stripePayment from "../stripe/stripePayment";
 
 class MakePayment {
   constructor() {}
@@ -19,6 +20,9 @@ class MakePayment {
         break;
       case "nagad":
         payment = nagadPayment;
+        break;
+      case "stripe":
+        payment = new stripePayment();
         break;
       default:
         break;
