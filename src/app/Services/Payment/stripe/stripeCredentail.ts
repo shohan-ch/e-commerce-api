@@ -2,17 +2,16 @@ import PaymentGateWay from "../../../../models/PaymentGateWay";
 
 class StripeCredentail {
   public credential: any;
-  public baseUrl: any;
   public isLive: boolean = false;
 
   constructor() {
-    this.getCredentials().then(() => this.getBaseUrl());
+    this.getCredentials();
   }
 
   async getCredentials() {
     let credential: any = await PaymentGateWay.findOne()
       .where("type")
-      .equals("bkash");
+      .equals("stripe");
     let result = { ...credential._doc };
 
     if (credential.isLiveActive) {
@@ -28,14 +27,6 @@ class StripeCredentail {
     delete result.liveCredentials;
     delete result.sandboxCredentials;
     this.credential = result;
-  }
-
-  getBaseUrl() {
-    if (this.isLive) {
-      this.baseUrl = "https://.pay.bka.sh";
-    } else {
-      this.baseUrl = "https://.sandbox.bka.sh";
-    }
   }
 }
 
