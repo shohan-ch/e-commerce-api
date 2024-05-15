@@ -6,11 +6,15 @@ import PaymentDetail from "../../../../models/PaymentDetail";
 class DbTransaction {
   constructor() {}
 
-  async getAmount(data: any) {
-    let order = await Order.findOne({ _id: data, status: "pending" });
-    if (!order) throw Error("Amount data not found");
+  async getAmount(orderId: any) {
+    let order: any = await Order.findOne({ _id: orderId, status: "pending" });
+    if (!order) throw Error("Order or Amount data not found");
+    let result = { ...order._doc };
 
-    return order.totalAmount;
+    return {
+      amount: result.totalAmount,
+      products: result.products,
+    };
   }
 
   async storePaymentDetails(response: any) {

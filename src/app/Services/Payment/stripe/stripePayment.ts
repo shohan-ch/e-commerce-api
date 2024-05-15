@@ -4,35 +4,53 @@ import CallApi from "../lib/callApi";
 import StripeCredentail from "./stripeCredentail";
 
 class StripePayment extends StripeCredentail {
-  public callApi: any;
-  public merchantName: string = "ecommerce";
+  public products: any;
 
-  constructor() {
+  constructor(products: any) {
     super();
-    this.callApi = new CallApi();
+    this.products = products;
   }
 
   async init(amount: number) {
-    const { appKeY, secret } = this.credential;
-    let stripe = new Stripe(secret);
+    let credential = await this.getCredentials();
+    let stripe = new Stripe(credential.secret);
+
+    let saleItems = this.products.map((item: any) => {
+      return {
+        price_data: {
+          currency: "bdt",
+          product_data: {
+            name: item.name,
+          },
+          unit_amount: item.quantityPrice * 100,
+        },
+        quantity: 1,
+      };
+    });
 
     let session: any = await stripe.checkout.sessions.create({
+      // line_items: saleItems,
       line_items: [
         {
-          price: "price_1PGOQTP9FsaCdzGuUJ0IJhJ4",
-          quantity: 5,
-        },
-        {
-          price: "price_1PGOQTP9FsaCdzGuUJ0IJhJ4",
+          price_data: {
+            currency: "bdt",
+            product_data: {
+              name: "Total amount to pay",
+            },
+            unit_amount: amount * 100,
+          },
           quantity: 1,
         },
       ],
+
       mode: "payment",
+      payment_method_types: ["card"],
       success_url: `${process.env.BASE_URL}/api/v1/stripe-callback?success=true`,
       cancel_url: `${process.env.BASE_URL}/api/v1/stripe-callback?canceled=true`,
     });
 
     if (session) {
+      console.log(session);
       return session;
     } else {
       throw Error("Something wrong to execute stripe");

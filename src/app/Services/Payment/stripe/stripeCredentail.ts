@@ -1,12 +1,9 @@
 import PaymentGateWay from "../../../../models/PaymentGateWay";
 
 class StripeCredentail {
-  public credential: any;
   public isLive: boolean = false;
 
-  constructor() {
-    this.getCredentials();
-  }
+  constructor() {}
 
   async getCredentials() {
     let credential: any = await PaymentGateWay.findOne()
@@ -26,7 +23,7 @@ class StripeCredentail {
     }
     delete result.liveCredentials;
     delete result.sandboxCredentials;
-    this.credential = result;
+    return result;
   }
 }
 

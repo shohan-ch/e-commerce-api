@@ -12,6 +12,7 @@ class MakePayment {
     const { gateway, orderId } = req.body;
 
     const customerId = "663cbb6d7de80af4948d5e23";
+    const { products, amount } = await dbTransaction.getAmount(orderId);
 
     let payment: any;
     switch (gateway) {
@@ -22,12 +23,12 @@ class MakePayment {
         payment = nagadPayment;
         break;
       case "stripe":
-        payment = new stripePayment();
+        payment = new stripePayment(products);
         break;
       default:
         break;
     }
-    let amount = await dbTransaction.getAmount(orderId);
+
     let response = await payment.init(amount);
 
     if (response && gateway === "bkash") {
