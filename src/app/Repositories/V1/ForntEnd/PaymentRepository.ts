@@ -13,6 +13,12 @@ class PaymentRepository {
     const { paymentID, status } = req.query;
     const bkashExecuteCallbak = makePayment.bkashCallBack(paymentID, status);
   }
+  async stripeCallback(req: any, res: Response) {
+    const { success, canceled, paymentId } = req.query;
+    const status = success ? true : false;
+    const response = makePayment.stripeCallBack(status, paymentId);
+    return response;
+  }
 }
 
 export default new PaymentRepository();

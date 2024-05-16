@@ -58,6 +58,12 @@ class MakePayment {
     let payment = new bkashPayment();
     let response = payment.bkashCallback(paymentID, status);
   }
+
+  stripeCallBack(status: boolean, paymentId: string) {
+    let payment = new stripePayment();
+    let response = payment.stripeCallback(status, paymentId);
+    return response;
+  }
 }
 
 export default new MakePayment();

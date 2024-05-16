@@ -6,7 +6,7 @@ import StripeCredentail from "./stripeCredentail";
 class StripePayment extends StripeCredentail {
   public products: any;
 
-  constructor(products: any) {
+  constructor(products: any = null) {
     super();
     this.products = products;
   }
@@ -45,14 +45,34 @@ class StripePayment extends StripeCredentail {
 
       mode: "payment",
       payment_method_types: ["card"],
-      success_url: `${process.env.BASE_URL}/api/v1/stripe-callback?success=true`,
-      cancel_url: `${process.env.BASE_URL}/api/v1/stripe-callback?canceled=true`,
+      success_url: `${process.env.BASE_URL}/api/v1/make-payment/stripe-callback?success=true&paymentId={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.BASE_URL}/api/v1/make-payment/stripe-callback?canceled=true`,
     });
 
     if (session) {
       return session;
     } else {
       throw Error("Something wrong to execute stripe");
+    }
+  }
+
+  async stripeCallback(status: boolean, paymentId: string) {
+    let credential = await this.getCredentials();
+    let stripe = new Stripe(credential.secret);
+    if (!status) {
+      return { status: false, paymentMsg: "Payment canceled!" };
+    } else {
+      const response = await stripe.checkout.sessions.retrieve(paymentId);
+      dbTransaction
+        .storePaymentDetails(response, true)
+        .then(() => {
+          console.log("Database operation completed.");
+        })
+        .catch((error) => {
+          throw Error(error);
+        });
+
+      return { status: true, paymentMsg: "Payment completed." };
     }
   }
 }

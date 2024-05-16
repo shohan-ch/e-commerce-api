@@ -4,5 +4,6 @@ const router = Router();
 
 router.post("/", PaymentController.store);
 router.post("/bkash-callback", PaymentController.bkashCallback);
+router.get("/stripe-callback", PaymentController.stripeCallback);
 
 export const payments = router;

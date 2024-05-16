@@ -13,6 +13,10 @@ class PaymentController {
     const data = await PaymentRepository.bkashCallback(req, res);
     return JsonReponse.success(data);
   }
+  async stripeCallback(req: any, res: Response) {
+    const data = await PaymentRepository.stripeCallback(req, res);
+    return JsonReponse.success(data);
+  }
 }
 
 export default new PaymentController();
