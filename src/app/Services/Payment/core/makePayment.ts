@@ -31,21 +31,24 @@ class MakePayment {
 
     let response = await payment.init(amount);
 
-    if (response && gateway === "bkash") {
-      const newRequestLog = {
-        customerId,
-        orderId: orderId,
-        gateway: "bkash",
-        ipAddress: req.headers["x-forwarded-for"],
-        amount,
-        status: "pending",
-        paymentId: response.paymentID,
-        response: response,
-      };
+    const newRequestLog: any = {
+      userId: customerId,
+      orderId: orderId,
+      ipAddress: req.headers["x-forwarded-for"],
+      amount,
+      status: "pending",
+      response: response,
+    };
 
+    if (response && gateway === "bkash") {
+      newRequestLog.gateway = "bkash";
+      newRequestLog.paymentId = response.paymentID;
       await PaymentLog.create(newRequestLog);
       return response.bkashURL;
     } else if (response && gateway === "stripe") {
+      newRequestLog.paymentId = response.id;
+      newRequestLog.gateway = "stripe";
+      await PaymentLog.create(newRequestLog);
       return response.url;
       // res.redirect(response.url);
     }

@@ -50,7 +50,6 @@ class StripePayment extends StripeCredentail {
     });
 
     if (session) {
-      console.log(session);
       return session;
     } else {
       throw Error("Something wrong to execute stripe");

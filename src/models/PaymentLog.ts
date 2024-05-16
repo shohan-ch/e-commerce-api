@@ -7,7 +7,7 @@ const PaymentLogSchema = new Schema(
       required: true,
       trim: true,
     },
-    oderId: {
+    orderId: {
       type: Schema.Types.ObjectId,
       required: true,
       trim: true,

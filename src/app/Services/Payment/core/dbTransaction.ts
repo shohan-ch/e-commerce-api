@@ -26,7 +26,7 @@ class DbTransaction {
 
       const newPaymentLog = {
         userId,
-        orderId: paymentLog.oderId,
+        orderId: paymentLog.orderId,
         gateway: paymentLog.gateway,
         ipAddress: paymentLog.ipAddress,
         amount: response.amount,
@@ -40,7 +40,7 @@ class DbTransaction {
       // Payment details store in database
       const details = {
         userId,
-        orderId: paymentLog.oderId,
+        orderId: paymentLog.orderId,
         gatewate: paymentLog.gateway,
         amount: response.amount,
         status: "success",
