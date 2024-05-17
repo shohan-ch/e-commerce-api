@@ -1,7 +1,11 @@
+import { orders } from "./../../../../routes/FrontEnd/V1/orders";
 import { Request, Response } from "express";
 import Order from "../../../../models/Order";
 import PaymentLog from "../../../../models/PaymentLog";
 import PaymentDetail from "../../../../models/PaymentDetail";
+import path from "path";
+import ejs from "ejs";
+import Nodemailer from "../../../../lib/Nodemailer";
 
 class DbTransaction {
   constructor() {}
@@ -55,9 +59,28 @@ class DbTransaction {
         response: response,
       };
       await PaymentDetail.create(details);
+
+      // Mail send
+      const order = await Order.findById(paymentLog.orderId);
+      let sendMail = await this.invoiceMailSend(
+        response.email || "testOrder@ss.com",
+        order
+      );
+
       return true;
     } catch (error) {
       console.log(error);
+      throw Error(error.message);
+    }
+  }
+
+  async invoiceMailSend(email: string, data: any) {
+    try {
+      const templatePath = path.resolve("src/templates/invoice.ejs");
+      let invoiceTemplate = await ejs.renderFile(templatePath, { data });
+      await Nodemailer.sendMail(email, "Invoice receipt", invoiceTemplate);
+      return true;
+    } catch (error) {
       throw Error(error.message);
     }
   }
