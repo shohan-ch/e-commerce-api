@@ -8,6 +8,7 @@ import Database from "./config/Database";
 import ErrorHandleMiddleware from "./middlewares/ErrorHandleMiddleware";
 import JsonResponseMiddleware from "./middlewares/JsonResponseMiddleware";
 import router from "./routes";
+import path from "path";
 
 class Server {
   public app: Application;
@@ -17,6 +18,8 @@ class Server {
     this.app = express();
     this.port = 3000;
     this.dbConnect();
+    this.app.set("view engine", "ejs"); // template engine set
+    // this.app.set("views", path.resolve("src/templates"));    // If views folder inside another directory
     this.middlewares();
     this.routes();
     this.app.use(ErrorHandleMiddleware);
