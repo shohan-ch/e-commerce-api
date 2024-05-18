@@ -22,6 +22,9 @@ const addressSchema = new Schema({
   block: {
     type: String,
   },
+  description: {
+    type: String,
+  },
 });
 
 const customerSchema = new Schema(
@@ -30,7 +33,7 @@ const customerSchema = new Schema(
     email: { type: String, trim: true, unique: true },
     password: { type: String, required: true },
     gender: { type: String },
-    dob: { type: Date, required: true },
+    dob: { type: Date },
     mobile: {
       type: Number,
       maxlength: 11,
