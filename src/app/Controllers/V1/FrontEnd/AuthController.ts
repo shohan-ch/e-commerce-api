@@ -28,6 +28,10 @@ class AuthController {
     return res.status(200).json(data);
   };
 
+  loginByMobile = async (req: Request, res: Response) => {
+    const data = await this.authRepository.loginByMobile(req, res);
+    return JsonReponse.success(data);
+  };
   login = async (req: Request, res: Response) => {
     const data = await this.authRepository.login(req.body, res);
     return JsonReponse.success(data);

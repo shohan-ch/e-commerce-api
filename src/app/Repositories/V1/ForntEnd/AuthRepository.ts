@@ -139,6 +139,11 @@ class AuthRepository {
     };
   }
 
+  async loginByMobile(req: Request, res: Response) {
+    const { mobile } = req.body;
+    return mobile;
+  }
+
   login = async (reqData: AuthProps, res: Response) => {
     await ValidationHelper.validate(reqData, {
       email: "required|email",
