@@ -10,6 +10,7 @@ import Customer from "../../../../models/Customer";
 import EmailVerifyTemplate from "../../../../templates/EmailVerifyTemplate";
 import ForgetPasswordTemplate from "../../../../templates/ForgetPasswordTemplate";
 import JsonReponse from "../../../../lib/JsonReponse";
+import SendSms from "../../../../app/Services/Sms/core/SendSms";
 
 interface AuthProps {
   name: string;
@@ -141,7 +142,8 @@ class AuthRepository {
 
   async loginByMobile(req: Request, res: Response) {
     const { mobile } = req.body;
-    return mobile;
+    let sendSms: any = new SendSms("Alphasms");
+    return await sendSms.send();
   }
 
   login = async (reqData: AuthProps, res: Response) => {
