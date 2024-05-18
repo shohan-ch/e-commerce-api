@@ -31,7 +31,7 @@ const customerSchema = new Schema(
   {
     name: String,
     email: { type: String, trim: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String },
     gender: { type: String },
     dob: { type: Date },
     mobile: {
@@ -39,8 +39,8 @@ const customerSchema = new Schema(
       maxlength: 11,
       minlength: 11,
       trim: true,
-      unique: true,
-      required: [true, "Valid mobile number needed!"],
+      // unique: true,
+      // required: [true, "Valid mobile number needed!"],
     },
     address: [addressSchema],
     verifyCode: { type: Number, maxLength: 6 },
