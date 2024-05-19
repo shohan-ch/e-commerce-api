@@ -4,14 +4,16 @@ import nagadPayment from "../nagad/nagadPayment";
 import dbTransaction from "./dbTransaction";
 import PaymentLog from "../../../../models/PaymentLog";
 import stripePayment from "../stripe/stripePayment";
+import Order from "../../../../models/Order";
+import Customer from "../../../../models/Customer";
 
 class MakePayment {
   constructor() {}
 
-  async callToGateway(req: Request, res: Response) {
+  async callToGateway(req: any, res: Response) {
     const { gateway, orderId } = req.body;
 
-    const customerId = "663cbb6d7de80af4948d5e23";
+    const customerId = req.authUser._id;
     const { products, amount } = await dbTransaction.getAmount(orderId);
 
     let payment: any;

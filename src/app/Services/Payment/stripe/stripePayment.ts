@@ -1,6 +1,5 @@
 import Stripe from "stripe";
 import dbTransaction from "../core/dbTransaction";
-import CallApi from "../lib/callApi";
 import StripeCredentail from "./stripeCredentail";
 
 class StripePayment extends StripeCredentail {

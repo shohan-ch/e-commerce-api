@@ -46,7 +46,7 @@ const customerSchema = new Schema(
       // unique: true,
       // required: [true, "Valid mobile number needed!"],
     },
-    address: [addressSchema],
+    addresses: [addressSchema],
     verifyCode: { type: Number, maxLength: 6 },
     isVerified: { type: Boolean, default: false },
   },

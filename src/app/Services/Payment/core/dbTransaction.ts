@@ -24,15 +24,14 @@ class DbTransaction {
   async storePaymentDetails(response: any, status: boolean) {
     try {
       const paymentId = response.id || response.paymentID;
-
-      const userId = "663cbb6d7de80af4948d5e23";
       let paymentLog = await PaymentLog.findOne({
         paymentId: paymentId,
         status: "pending",
       });
 
+      // Payment log strore
       const successPaymentLog = {
-        userId,
+        userId: paymentLog.userId,
         orderId: paymentLog.orderId,
         gateway: paymentLog.gateway,
         ipAddress: paymentLog.ipAddress,
@@ -49,7 +48,7 @@ class DbTransaction {
 
       // Payment details store in database
       const details = {
-        userId,
+        userId: paymentLog.userId,
         orderId: paymentLog.orderId,
         gateway: paymentLog.gateway,
         amount: response.amount || paymentLog.amount,
@@ -61,10 +60,24 @@ class DbTransaction {
       await PaymentDetail.create(details);
 
       // Mail send
-      const order = await Order.findById(paymentLog.orderId);
+
+      const order: any = await Order.findById(paymentLog.orderId).populate(
+        "customerId",
+        "-_id addresses"
+      );
+
+      const { addresses } = order.customerId;
+      let orderWithAddress = { ...order._doc };
+      delete orderWithAddress.customerId;
+
+      orderWithAddress.gateway = paymentLog.gateway;
+      orderWithAddress.address = addresses.find((address: any) => {
+        return String(address._id) == String(order.shippingAddress);
+      });
+
       let sendMail = await this.invoiceMailSend(
-        response.email || "testOrder@ss.com",
-        order
+        response.customer_details.email,
+        orderWithAddress
       );
 
       return true;
