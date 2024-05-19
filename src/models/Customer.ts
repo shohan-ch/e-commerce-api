@@ -30,12 +30,13 @@ const addressSchema = new Schema({
 const customerSchema = new Schema(
   {
     name: String,
-    email: { type: String, trim: true, unique: true },
+    email: { type: String, trim: true },
+    // email: { type: String, trim: true, unique: true },
     password: { type: String },
     gender: { type: String },
     dob: { type: Date },
     mobile: {
-      type: Number,
+      type: String,
       maxlength: 11,
       minlength: 11,
       trim: true,
@@ -72,19 +73,22 @@ const customerSchema = new Schema(
 
 // Middlware to send mail after insert new record in database;
 customerSchema.post("save", async function (user, next) {
-  const emailVerifyTemplate = EmailVerifyTemplate(user.name, user.verifyCode);
-  const sendMail: any = await Nodemailer.sendMail(
-    user.email,
-    "verify email shohan",
-    emailVerifyTemplate
-  );
+  if (user.isModified("email")) {
+    const emailVerifyTemplate = EmailVerifyTemplate(user.name, user.verifyCode);
+    const sendMail: any = await Nodemailer.sendMail(
+      user.email,
+      "verify email shohan",
+      emailVerifyTemplate
+    );
 
-  if (sendMail.messageId) {
-    next();
-  } else {
-    const err = Error("Message not sent");
-    next(err);
+    if (sendMail.messageId) {
+      next();
+    } else {
+      const err = Error("Message not sent");
+      next(err);
+    }
   }
+  next();
 });
 
 export default mongoose.model("Customer", customerSchema);

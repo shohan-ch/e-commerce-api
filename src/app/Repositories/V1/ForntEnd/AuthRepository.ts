@@ -142,8 +142,18 @@ class AuthRepository {
 
   async loginByMobile(req: Request, res: Response) {
     const { mobile } = req.body;
-    let sendSms: any = new SendSms("Alphasms");
-    return await sendSms.send();
+
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    const message = `Your one time PIN is ${otp}. It will expire in 3 minutes.`;
+    let newCustomer = await Customer.create({
+      mobile,
+      verifyCode: otp,
+    });
+
+    if (newCustomer) {
+      let sendSms: any = new SendSms("AlphaSms");
+      return await sendSms.send(mobile, message);
+    }
   }
 
   login = async (reqData: AuthProps, res: Response) => {

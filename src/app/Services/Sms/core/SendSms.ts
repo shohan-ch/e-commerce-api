@@ -1,6 +1,6 @@
 import AlphaSms from "../providers/AlphaSms";
 
-type ProviderType = "Alphasms" | "Boomcast";
+type ProviderType = "AlphaSms" | "Boomcast";
 
 class SendSms {
   public provider: any;
@@ -9,10 +9,10 @@ class SendSms {
     this.provider = import(`../providers/${type}`);
   }
 
-  async send(mobile: string, text: string) {
+  async send(number: string, message: string) {
     const { default: ProviderClass } = await this.provider;
 
-    return ProviderClass.init();
+    return await ProviderClass.init(number, message);
   }
 }
 
