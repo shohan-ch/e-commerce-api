@@ -3,7 +3,7 @@ import SmsConfig from "../../../../config/SmsConfig";
 class AlphaSms {
   constructor() {}
 
-  BaseUrl: string = SmsConfig.ALPHA_SMS.API_KEY;
+  BaseUrl: string = SmsConfig.ALPHA_SMS.BASE_URL;
   ApiKey: string = SmsConfig.ALPHA_SMS.API_KEY;
 
   async init(number: string, message: string) {

@@ -140,6 +140,9 @@ class AuthRepository {
     };
   }
 
+  async verifyOtp(req: Request, res: Response) {
+    const { otp } = req.body;
+  }
   async loginByMobile(req: Request, res: Response) {
     const { mobile } = req.body;
 
@@ -153,7 +156,10 @@ class AuthRepository {
     if (newCustomer) {
       let sendSms: any = new SendSms();
       sendSms.setProvider("AlphaSms");
-      return await sendSms.send(mobile, message);
+      const response = await sendSms.send(mobile, message);
+      if (response) {
+        return "We have sent otp in your Phone" + mobile;
+      }
     }
   }
 

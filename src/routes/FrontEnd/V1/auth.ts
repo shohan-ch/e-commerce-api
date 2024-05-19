@@ -4,6 +4,7 @@ import AuthMiddleware from "../../../middlewares/AuthMiddleware";
 
 const router = Router();
 
+router.post("/verify-mobile-otp", AuthController.verifyOtp);
 router.post("/login-with-mobile-otp", AuthController.loginByMobile);
 router.post("/login", AuthController.login);
 router.post("/registar", AuthController.registar);

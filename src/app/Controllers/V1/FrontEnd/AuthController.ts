@@ -32,6 +32,10 @@ class AuthController {
     const data = await this.authRepository.loginByMobile(req, res);
     return JsonReponse.success(data);
   };
+  verifyOtp = async (req: Request, res: Response) => {
+    const data = await this.authRepository.verifyOtp(req, res);
+    return JsonReponse.success(data);
+  };
   login = async (req: Request, res: Response) => {
     const data = await this.authRepository.login(req.body, res);
     return JsonReponse.success(data);
