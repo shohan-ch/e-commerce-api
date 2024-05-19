@@ -176,6 +176,10 @@ class AuthRepository {
       secure: false,
     });
 
+    user.isVerified = true;
+    user.verifyCode = null;
+    await user.save();
+
     return { accessToken, refreshToken };
   }
   async loginByMobile(req: Request, res: Response) {
