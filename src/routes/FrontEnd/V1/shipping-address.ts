@@ -5,5 +5,6 @@ const router = Router();
 
 router.use(authMiddleware);
 router.post("/", ShippingAddressController.store);
+router.patch("/:addressId", ShippingAddressController.update);
 
 export const shippingAddress = router;

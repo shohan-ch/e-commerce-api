@@ -9,6 +9,10 @@ class ShippingAddressController {
     const data = await ShippingAddressRepository.store(req, res);
     return JsonReponse.success(data);
   }
+  async update(req: Request | any, res: Response) {
+    const data = await ShippingAddressRepository.update(req, res);
+    return JsonReponse.success(data);
+  }
 }
 
 export default new ShippingAddressController();
