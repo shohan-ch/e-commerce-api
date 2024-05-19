@@ -3,19 +3,18 @@ import SmsConfig from "../../../../config/SmsConfig";
 class AlphaSms {
   constructor() {}
 
-  baseUrl: string = SmsConfig.ALPHA_SMS.API_KEY;
+  BaseUrl: string = SmsConfig.ALPHA_SMS.API_KEY;
   ApiKey: string = SmsConfig.ALPHA_SMS.API_KEY;
 
   async init(number: string, message: string) {
     try {
-      let url = this.baseUrl + "/sendsms";
+      let url = this.BaseUrl + "/sendsms";
       const postData = {
-        api_key: "PX9lSV5XUyMJ7px4WO8r5ZqC5cxBN3kl5iPli1Bx",
+        api_key: this.ApiKey,
         msg: message,
         to: number,
       };
 
-      console.log(postData);
       let response = await fetch(url, {
         method: "POST",
         headers: {

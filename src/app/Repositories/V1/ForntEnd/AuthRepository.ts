@@ -151,7 +151,8 @@ class AuthRepository {
     });
 
     if (newCustomer) {
-      let sendSms: any = new SendSms("AlphaSms");
+      let sendSms: any = new SendSms();
+      sendSms.setProvider("AlphaSms");
       return await sendSms.send(mobile, message);
     }
   }

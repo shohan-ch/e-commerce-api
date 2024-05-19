@@ -5,7 +5,7 @@ type ProviderType = "AlphaSms" | "Boomcast";
 class SendSms {
   public provider: any;
 
-  constructor(type: ProviderType) {
+  setProvider(type: ProviderType) {
     this.provider = import(`../providers/${type}`);
   }
 
