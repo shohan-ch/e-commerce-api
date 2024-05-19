@@ -2,7 +2,8 @@ import mongoose, { Schema } from "mongoose";
 
 const jwtTokenSchema = new Schema(
   {
-    email: { type: String, required: true },
+    email: { type: String },
+    mobile: { type: String },
     refreshToken: { type: String, required: true },
     created_at: { type: Date, default: Date.now },
   },

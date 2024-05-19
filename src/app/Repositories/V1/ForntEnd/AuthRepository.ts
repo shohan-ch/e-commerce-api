@@ -141,19 +141,59 @@ class AuthRepository {
   }
 
   async verifyOtp(req: Request, res: Response) {
-    const { otp } = req.body;
+    const { otp, mobile } = req.body;
+
+    await ValidationHelper.validate(req.body, {
+      mobile: "required|string",
+      otp: "required|number",
+    });
+
+    const user = await Customer.findOne().where("mobile").equals(mobile);
+    if (!user) throw Error("Mobile number not found");
+    if (user.verifyCode !== otp) throw Error("Otp not match");
+
+    let accessToken = await JwtAuth.getAccessToken({
+      _id: user._id,
+      mobile: user.mobile,
+    });
+
+    let refreshToken = await JwtAuth.getRefreshToken({
+      _id: user._id,
+      mobile: user.mobile,
+      time: new Date(),
+    });
+
+    await JwtToken.findOneAndUpdate(
+      {
+        mobile: mobile,
+      },
+      { refreshToken: BcryptHash.makeHash(refreshToken) },
+      { upsert: true }
+    );
+
+    let cookie = res.cookie("userId", user._id, {
+      maxAge: 60 * 60 * 24,
+      secure: false,
+    });
+
+    return { accessToken, refreshToken };
   }
   async loginByMobile(req: Request, res: Response) {
     const { mobile } = req.body;
 
     const otp = Math.floor(100000 + Math.random() * 900000);
     const message = `Your one time PIN is ${otp}. It will expire in 3 minutes.`;
-    let newCustomer = await Customer.create({
-      mobile,
-      verifyCode: otp,
-    });
 
-    if (newCustomer) {
+    let newOrUpdateCustomer = await Customer.findOneAndUpdate(
+      { mobile: mobile },
+      {
+        mobile,
+        verifyCode: otp,
+      },
+      { new: true, upsert: true }
+    );
+
+    if (newOrUpdateCustomer) {
       let sendSms: any = new SendSms();
       sendSms.setProvider("AlphaSms");
       const response = await sendSms.send(mobile, message);
