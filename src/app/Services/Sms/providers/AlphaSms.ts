@@ -1,7 +1,10 @@
+import SmsConfig from "../../../../config/SmsConfig";
+
 class AlphaSms {
   constructor() {}
 
-  baseUrl: string = "https://api.sms.net.bd";
+  baseUrl: string = SmsConfig.ALPHA_SMS.API_KEY;
+  ApiKey: string = SmsConfig.ALPHA_SMS.API_KEY;
 
   async init(number: string, message: string) {
     try {
