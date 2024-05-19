@@ -5,7 +5,10 @@ import EmailVerifyTemplate from "../templates/EmailVerifyTemplate";
 const addressSchema = new Schema({
   label: {
     type: String,
-    enum: ["Work", "Home", "Partner"],
+    enum: {
+      values: ["Work", "Home", "Partner"],
+      message: "Label value should be Work, Home, Partner",
+    },
   },
   city: {
     type: String,

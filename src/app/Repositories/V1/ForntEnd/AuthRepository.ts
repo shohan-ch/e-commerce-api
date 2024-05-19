@@ -177,7 +177,7 @@ class AuthRepository {
     });
 
     user.isVerified = true;
-    user.verifyCode = null;
+    // user.verifyCode = null;
     await user.save();
 
     return { accessToken, refreshToken };
